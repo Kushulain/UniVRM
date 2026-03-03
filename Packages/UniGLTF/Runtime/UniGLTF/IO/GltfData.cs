@@ -194,6 +194,16 @@ namespace UniGLTF
 			ClampBufferViewToSegment(view.byteOffset, view.byteLength, segment.Length, out int start, out int length);
             return segment.GetSubArray(start, length);
         }
+		
+		/// <summary>
+        /// Clamp bufferView range to actual segment length (handles off-by-one in some exporters e.g. Avaturn glb-to-vrm).
+        /// </summary>
+        static void ClampBufferViewToSegment(int byteOffset, int byteLength, int segmentLength, out int start, out int length)
+        {
+            start = Math.Min(byteOffset, segmentLength);
+            int available = segmentLength - start;
+            length = Math.Min(byteLength, Math.Max(0, available));
+        }
 
         NativeArray<byte> GetBytesFromBufferView(glTFBufferView view)
         {
